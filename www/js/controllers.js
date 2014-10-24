@@ -56,15 +56,58 @@ angular.module('starter.controllers', [])
 
     })
 
-    .controller('CategoryCtrl', function($scope, api, $stateParams) {
+    .controller('CategoryCtrl', function($scope, api, $stateParams, $ionicModal) {
+
+        $scope.category = {};
 
         api.getCategoryDetail($stateParams.categoryId, function(response) {
             if (response.status === "success") {
-                $scope.category = response.data[0];
+                var data = response.data[0];
+
+                $scope.category = data;
+
+
+
+                $scope.$on('mapInitialized', function (event, map) {
+
+                    $scope.map = map;
+                    $scope.map.markers = [{
+                        lat: data.lat,
+                        lng: data.lon
+                    }];
+
+                    $scope.category.positions = [{
+                        lat: data.lat,
+                        lng: data.lon
+                    }];
+
+                    var myLatLng = new google.maps.LatLng(data.lat, data.lon);
+
+                    map.setCenter(myLatLng);
+                });
+
             } else {
                 alert(response.message);
             }
-        })
+
+
+            $ionicModal.fromTemplateUrl('map.html', {
+                scope: $scope,
+                animation: 'slide-in-up'
+            }).then(function (modal) {
+                $scope.modal = modal;
+            });
+            $scope.showOnMap = function () {
+                $scope.modal.show();
+            };
+            $scope.category.hideMap = function () {
+                $scope.modal.hide();
+            };
+            //Cleanup the modal when we're done with it!
+            $scope.$on('$destroy', function () {
+                $scope.modal.remove();
+            });
+        });
 
     })
 
