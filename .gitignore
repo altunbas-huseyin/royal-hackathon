@@ -12,4 +12,8 @@ plugins/
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/scopes/scope_settings.xml
-www/lib/
+
+www/js/app.js.*.js
+npm-debug.log
+
+

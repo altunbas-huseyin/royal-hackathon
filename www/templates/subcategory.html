@@ -1,0 +1,14 @@
+<ion-view title="Sub Category">
+    <ion-content class="has-header">
+
+        <div class="list">
+
+            <a class="item" ng-repeat="subcategory in subcategories" href="#/app/category/{{subcategory.id}}">
+                <h2 ng-bind="subcategory.name"></h2>
+                <p ng-bind="subcategory.address"></p>
+            </a>
+
+
+        </div>
+    </ion-content>
+</ion-view>

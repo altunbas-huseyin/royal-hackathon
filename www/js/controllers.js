@@ -1,47 +1,134 @@
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
+    .controller('AppCtrl', function ($scope, store, auth, $state) {
         // Form data for the login modal
         $scope.loginData = {};
 
-        // Create the login modal that we will use later
-        $ionicModal.fromTemplateUrl('templates/login.html', {
-            scope: $scope
-        }).then(function (modal) {
-            $scope.modal = modal;
-        });
+        var token = store.get('token');
 
-        // Triggered in the login modal to close it
-        $scope.closeLogin = function () {
-            $scope.modal.hide();
-        };
+        if (token) $scope.loginData.token = token;
 
-        // Open the login modal
-        $scope.login = function () {
-            $scope.modal.show();
-        };
+        $scope.loginData.logout = function () {
+            auth.signout();
+            store.remove('profile');
+            store.remove('token');
 
-        // Perform the login action when the user submits the login form
-        $scope.doLogin = function () {
-            console.log('Doing login', $scope.loginData);
+            $state.go('app.login');
+        }
 
-            // Simulate a login delay. Remove this and replace with your login
-            // code if using a login system
-            $timeout(function () {
-                $scope.closeLogin();
-            }, 1000);
-        };
     })
 
+    .controller('LoginCtrl', function ($scope, api, store, $state, auth, $ionicSideMenuDelegate) {
+
+        $ionicSideMenuDelegate.toggleLeft();
+
+        $scope.login = function () {
+            auth.signin({
+                authParams: {
+                    scope: 'openid offline_access',
+                    device: 'Mobile device'
+                }
+            }, function (profile, token, accessToken, state, refreshToken) {
+                // Success callback
+                store.set('profile', profile);
+                store.set('token', token);
+                store.set('refreshToken', refreshToken);
+                $state.go('app.home');
+
+                $scope.loginData.token = token;
+
+            }, function () {
+                // Error callback
+            });
+        }
+
+    })
     .controller('HomeCtrl', function ($scope, api) {
 
-        api.getCategories(function(response) {
+        api.getCategories(function (response) {
             if (response.status === "success") {
                 $scope.categories = response.data;
             } else {
                 alert(response.message);
             }
         });
+    })
+
+    .controller('SubcategoryCtrl', function ($scope, api, $stateParams) {
+
+        api.getSubCategory($stateParams.subcategoryId, "1", "50", function (response) {
+            if (response.status === "success") {
+                $scope.subcategories = response.data;
+            } else {
+                alert(response.message);
+            }
+        })
+
+    })
+
+    .controller('CategoryCtrl', function ($scope, api, $stateParams, $ionicModal) {
+
+        $scope.category = {};
+
+        api.getCategoryDetail($stateParams.categoryId, function (response) {
+            if (response.status === "success") {
+                var data = response.data[0];
+
+                $scope.category = data;
+
+
+                $scope.$on('mapInitialized', function (event, map) {
+
+                    $scope.map = map;
+                    $scope.map.markers = [
+                        {
+                            lat: data.lat,
+                            lng: data.lon
+                        }
+                    ];
+
+                    $scope.category.positions = [
+                        {
+                            lat: data.lat,
+                            lng: data.lon
+                        }
+                    ];
+
+                    var myLatLng = new google.maps.LatLng(data.lat, data.lon);
+
+                    map.setCenter(myLatLng);
+                });
+
+            } else {
+                alert(response.message);
+            }
+
+            $scope.goToUrl = function(url) {
+                if (url) {
+                    var ref = window.open(url, '_blank', 'hidden=yes');
+                    ref.show();
+                }
+            }
+
+
+            $ionicModal.fromTemplateUrl('map.html', {
+                scope: $scope,
+                animation: 'slide-in-up'
+            }).then(function (modal) {
+                $scope.modal = modal;
+            });
+            $scope.showOnMap = function () {
+                $scope.modal.show();
+            };
+            $scope.category.hideMap = function () {
+                $scope.modal.hide();
+            };
+            //Cleanup the modal when we're done with it!
+            $scope.$on('$destroy', function () {
+                $scope.modal.remove();
+            });
+        });
+
     })
 
     .controller('PlaylistsCtrl', function ($scope) {
