@@ -1,0 +1,11 @@
+
+Mostly everything should work with 
+
+bower install 
+
+you might also need to 
+
+npm install cordova
+ionic plugin add org.apache.cordova.inappbrowser
+
+

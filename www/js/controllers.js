@@ -33,6 +33,29 @@ angular.module('starter.controllers', [])
         };
     })
 
+    .controller('LoginCtrl', function ($scope, api, store, $state, auth) {
+      $scope.login = function() {
+        auth.signin({
+          authParams: {
+            scope: 'openid offline_access',
+            device: 'Mobile device'
+          }
+        }, function(profile, token, accessToken, state, refreshToken) {
+          // Success callback
+          store.set('profile', profile);
+          store.set('token', token);
+          store.set('refreshToken', refreshToken);
+          $state.go('app.home');
+        }, function() {
+          // Error callback
+        });
+      }
+      $scope.logout = function() {
+          auth.signout();
+          store.remove('profile');
+          store.remove('token');
+        }
+    })
     .controller('HomeCtrl', function ($scope, api) {
 
         api.getCategories(function(response) {
@@ -42,6 +65,73 @@ angular.module('starter.controllers', [])
                 alert(response.message);
             }
         });
+    })
+
+    .controller('SubcategoryCtrl', function($scope, api, $stateParams) {
+
+        api.getSubCategory($stateParams.subcategoryId, "1", "50", function(response) {
+            if (response.status === "success") {
+                $scope.subcategories = response.data;
+            } else {
+                alert(response.message);
+            }
+        })
+
+    })
+
+    .controller('CategoryCtrl', function($scope, api, $stateParams, $ionicModal) {
+
+        $scope.category = {};
+
+        api.getCategoryDetail($stateParams.categoryId, function(response) {
+            if (response.status === "success") {
+                var data = response.data[0];
+
+                $scope.category = data;
+
+
+
+                $scope.$on('mapInitialized', function (event, map) {
+
+                    $scope.map = map;
+                    $scope.map.markers = [{
+                        lat: data.lat,
+                        lng: data.lon
+                    }];
+
+                    $scope.category.positions = [{
+                        lat: data.lat,
+                        lng: data.lon
+                    }];
+
+                    var myLatLng = new google.maps.LatLng(data.lat, data.lon);
+
+                    map.setCenter(myLatLng);
+                });
+
+            } else {
+                alert(response.message);
+            }
+
+
+            $ionicModal.fromTemplateUrl('map.html', {
+                scope: $scope,
+                animation: 'slide-in-up'
+            }).then(function (modal) {
+                $scope.modal = modal;
+            });
+            $scope.showOnMap = function () {
+                $scope.modal.show();
+            };
+            $scope.category.hideMap = function () {
+                $scope.modal.hide();
+            };
+            //Cleanup the modal when we're done with it!
+            $scope.$on('$destroy', function () {
+                $scope.modal.remove();
+            });
+        });
+
     })
 
     .controller('PlaylistsCtrl', function ($scope) {

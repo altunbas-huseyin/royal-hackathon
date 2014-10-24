@@ -1,0 +1,52 @@
+<ion-view title="{{category.name}}">
+    <ion-content class="has-header">
+        <div class="list card">
+
+            <div class="item">
+                <h2 ng-bind="category.name"></h2>
+                <p ng-show="category.phone"><i class="icon ion-android-call"></i> <span ng-bind-html="category.phone"></span></p>
+            </div>
+
+            <div class="item item-body">
+                <strong>Address</strong>
+                <p>{{category.address}}</p>
+
+                <div ng-show="category.email">
+                    <strong>Email</strong>
+                    <a href="mailto:{{category.email}}"></a>
+                    <br/>
+                    <br/>
+                </div>
+
+                <div ng-show="category.description">
+                    <strong>Description: </strong>
+                    <p ng-bind-html="category.description"></p>
+                    <br/>
+                </div>
+
+                <a class="button button-assertive" ng-show="category.websiteUrl" ng-href="{{category.websiteUrl}}">Go to website</a>
+
+                <button class="button button-balanced" ng-click="showOnMap()">Show on map</button>
+            </div>
+
+        </div>
+    </ion-content>
+</ion-view>
+
+
+<script id="map.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar>
+            <h1 class="title">Map</h1>
+            <button class="button button-primary" ng-click="category.hideMap()">Close</button>
+        </ion-header-bar>
+        <ion-content scroll="false">
+            <div class="mapWrap"  data-tap-disabled="true">
+                <map zoom="15">
+                    <!-- ngRepeat: pos in positions-->
+                    <marker ng-repeat=" pos in category.positions" position="{{pos.lat}},{{pos.lng}}"></marker>
+                </map>
+            </div>
+        </ion-content>
+    </ion-modal-view>
+</script>
