@@ -6,3 +6,14 @@ map {
 .scroll, .mapWrap {
     height: 100%;
 }
+
+.eiffel-background {
+    background: url('../img/eiffel.jpg') #081320;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.login-button {
+    position: absolute;
+    bottom: 15px;
+}

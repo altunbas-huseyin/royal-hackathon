@@ -24,7 +24,7 @@
                     <br/>
                 </div>
 
-                <a class="button button-assertive" ng-show="category.websiteUrl" ng-href="{{category.websiteUrl}}">Go to website</a>
+                <a class="button button-assertive" ng-show="category.websiteUrl" ng-click="goToUrl(category.websiteUrl)">Go to website</a>
 
                 <button class="button button-balanced" ng-click="showOnMap()">Show on map</button>
             </div>
