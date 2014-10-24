@@ -44,6 +44,30 @@ angular.module('starter.controllers', [])
         });
     })
 
+    .controller('SubcategoryCtrl', function($scope, api, $stateParams) {
+
+        api.getSubCategory($stateParams.subcategoryId, "1", "50", function(response) {
+            if (response.status === "success") {
+                $scope.category = response.data;
+            } else {
+                alert(response.message);
+            }
+        })
+
+    })
+
+    .controller('CategoryCtrl', function($scope, api, $stateParams) {
+
+        api.getCategoryDetail($stateParams.categoryId, "1", "50", function(response) {
+            if (response.status === "success") {
+                $scope.category = response.data;
+            } else {
+                alert(response.message);
+            }
+        })
+
+    })
+
     .controller('PlaylistsCtrl', function ($scope) {
         $scope.playlists = [
             { title: 'Reggae', id: 1 },

@@ -23,8 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     .factory('api', function($http) {
         var config = {
             baseUrl : "https://api.paris.fr/api/data/1.0/",
-            token   : "39126f7a669cc58f7814e1f2f2d7b26fdee0e2617c764c225f62aed434df8003",
-
+            token   : "39126f7a669cc58f7814e1f2f2d7b26fdee0e2617c764c225f62aed434df8003"
         };
 
         return {
@@ -34,6 +33,36 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                     method: "GET",
                     params: {
                         token: config.token
+                    }
+                })
+                    .success(function(data) {
+                        success(data);
+                    });
+            },
+            getCategoryDetail: function(cid, offset, limit, success) {
+                $http({
+                    url: config.baseUrl + 'Equipements/get_equipements/',
+                    method: "GET",
+                    params: {
+                        token: config.token,
+                        cid: cid,
+                        offset: offset,
+                        limit: limit
+                    }
+                })
+                    .success(function(data) {
+                        success(data);
+                    });
+            },
+            getSubCategory: function(cid, offset, limit, success) {
+                $http({
+                    url: config.baseUrl + 'Equipements/get_equipements/',
+                    method: "GET",
+                    params: {
+                        token: config.token,
+                        cid: cid,
+                        offset: offset,
+                        limit: limit
                     }
                 })
                     .success(function(data) {
@@ -72,14 +101,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                 }
             })
 
-            .state('app.browse', {
-                url: "/browse",
+            .state('app.category', {
+                url: "/category/:categoryId",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/browse.html"
+                        templateUrl: "templates/category.html",
+                        controller: "CategoryCtrl"
                     }
                 }
             })
+
+            .state('app.subcategory', {
+                url: "/subcategory/:subcategoryId",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/subcategory.html",
+                        controller: "SubcategoryCtrl"
+                    }
+                }
+            })
+
             .state('app.playlists', {
                 url: "/playlists",
                 views: {
