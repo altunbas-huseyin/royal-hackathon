@@ -1,12 +1,31 @@
 <ion-view title="{{category.name}}">
-    <ion-nav-buttons side="left">
-        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-    </ion-nav-buttons>
     <ion-content class="has-header">
-        <ion-list>
-            <ion-item ng-repeat="category in category" href="#/app/category/{{category.idcategories}}">
-                {{category.name}}
-            </ion-item>
-        </ion-list>
+        <div class="list card">
+
+            <div class="item">
+                <h2 ng-bind="category.name"></h2>
+                <p ng-show="category.phone"><i class="icon ion-android-call"></i> Phone: {{category.phone}}</p>
+            </div>
+
+            <div class="item item-body">
+                <strong>Address</strong>
+                <p>{{category.address}}</p>
+
+                <div ng-show="category.email">
+                    <strong>Email</strong>
+                    <a href="mailto:{{category.email}}"></a>
+                    <br/>
+                    <br/>
+                </div>
+
+
+                <strong>Description: </strong>
+                <p ng-show="category.description" ng-bind-html="category.description"></p>
+                <br/>
+                <a ng-show="category.websiteUrl" ng-href="{{category.websiteUrl}}">Go to website</a>
+
+            </div>
+
+        </div>
     </ion-content>
 </ion-view>

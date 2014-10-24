@@ -39,7 +39,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                         success(data);
                     });
             },
-            getCategoryDetail: function(cid, offset, limit, success) {
+            getSubCategory: function(cid, offset, limit, success) {
                 $http({
                     url: config.baseUrl + 'Equipements/get_equipements/',
                     method: "GET",
@@ -54,15 +54,13 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                         success(data);
                     });
             },
-            getSubCategory: function(cid, offset, limit, success) {
+            getCategoryDetail: function(id, success) {
                 $http({
-                    url: config.baseUrl + 'Equipements/get_equipements/',
+                    url: config.baseUrl + 'Equipements/get_equipement/',
                     method: "GET",
                     params: {
                         token: config.token,
-                        cid: cid,
-                        offset: offset,
-                        limit: limit
+                        id: id
                     }
                 })
                     .success(function(data) {

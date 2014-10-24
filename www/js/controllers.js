@@ -48,7 +48,7 @@ angular.module('starter.controllers', [])
 
         api.getSubCategory($stateParams.subcategoryId, "1", "50", function(response) {
             if (response.status === "success") {
-                $scope.category = response.data;
+                $scope.subcategories = response.data;
             } else {
                 alert(response.message);
             }
@@ -58,9 +58,9 @@ angular.module('starter.controllers', [])
 
     .controller('CategoryCtrl', function($scope, api, $stateParams) {
 
-        api.getCategoryDetail($stateParams.categoryId, "1", "50", function(response) {
+        api.getCategoryDetail($stateParams.categoryId, function(response) {
             if (response.status === "success") {
-                $scope.category = response.data;
+                $scope.category = response.data[0];
             } else {
                 alert(response.message);
             }
