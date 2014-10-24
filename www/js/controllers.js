@@ -33,6 +33,29 @@ angular.module('starter.controllers', [])
         };
     })
 
+    .controller('LoginCtrl', function ($scope, api, store, $state, auth) {
+      $scope.login = function() {
+        auth.signin({
+          authParams: {
+            scope: 'openid offline_access',
+            device: 'Mobile device'
+          }
+        }, function(profile, token, accessToken, state, refreshToken) {
+          // Success callback
+          store.set('profile', profile);
+          store.set('token', token);
+          store.set('refreshToken', refreshToken);
+          $state.go('app.home');
+        }, function() {
+          // Error callback
+        });
+      }
+      $scope.logout = function() {
+          auth.signout();
+          store.remove('profile');
+          store.remove('token');
+        }
+    })
     .controller('HomeCtrl', function ($scope, api) {
 
         api.getCategories(function(response) {

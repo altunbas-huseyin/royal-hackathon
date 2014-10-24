@@ -4,7 +4,11 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 
+    'starter.controllers',
+    'auth0',
+    'angular-storage',
+    'angular-jwt'])
 
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
@@ -70,7 +74,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
     })
 
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider,  authProvider, $httpProvider, jwtInterceptorProvider) {
         $stateProvider
 
             .state('app', {
@@ -78,6 +82,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                 abstract: true,
                 templateUrl: "templates/menu.html",
                 controller: 'AppCtrl'
+            })
+
+            .state('app.login', {
+                url: "/login",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/login.html",
+                        controller: "LoginCtrl"
+                    }
+                }
             })
 
             .state('app.home', {
@@ -139,6 +153,15 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                 }
             });
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/app/home');
+        $urlRouterProvider.otherwise('/app/login');
+        authProvider.init({
+            domain: 'royalhackathon.auth0.com',
+            clientID: 'YnuUoMRh1p9EwmVQmhIR3IevNPfJgkju',
+            loginState: 'login'
+        });
+    })
+    .run(function(auth) {
+      // This hooks al auth events to check everything as soon as the app starts
+      auth.hookEvents();
     });
 
