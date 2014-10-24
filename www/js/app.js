@@ -4,11 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 
-  'starter.controllers',
-  'auth0',
-  'angular-storage',
-  'angular-jwt'])
+angular.module('starter', ['ionic', 'starter.controllers'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -23,7 +19,8 @@ angular.module('starter', ['ionic',
     }
   });
 })
-.config(function($stateProvider, $urlRouterProvider, authProvider, $httpProvider, jwtInterceptorProvider) {
+
+.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
     .state('app', {
@@ -39,12 +36,6 @@ angular.module('starter', ['ionic',
         'menuContent' :{
           templateUrl: "templates/search.html"
         }
-      },
-      data: {
-      // This tells Auth0 that this state requires the user to be logged in.
-      // If the user isn't logged in and he tries to access this state
-      // he'll be redirected to the login page
-        requiresLogin: true
       }
     })
 
@@ -77,14 +68,5 @@ angular.module('starter', ['ionic',
     });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/playlists');
-
-  authProvider.init({
-    domain: 'YOUR_NAMESPACE',
-    clientID: 'YOUR_CLIENT_ID',
-    loginState: 'login'
-  });
-})
-.run(function(auth) {
-  // This hooks al auth events to check everything as soon as the app starts
-  auth.hookEvents();
 });
+
